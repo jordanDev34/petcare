@@ -1,0 +1,18 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export type HealthResponse = {
+  status: string;
+  service: string;
+  timestamp: string;
+};
+
+@Injectable({ providedIn: 'root' })
+export class HealthService {
+  constructor(private http: HttpClient) {}
+
+  getHealth(): Observable<HealthResponse> {
+    return this.http.get<HealthResponse>('/api/health');
+  }
+}

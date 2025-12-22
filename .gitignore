@@ -1,0 +1,12 @@
+# Java / Maven
+**/target/
+**/.idea/
+**/*.iml
+
+# Node / Angular
+**/node_modules/
+**/dist/
+**/.angular/
+
+# OS
+.DS_Store
