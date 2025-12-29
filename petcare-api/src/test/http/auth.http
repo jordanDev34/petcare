@@ -1,26 +1,21 @@
-### Register user
+### Register (renvoie un JWT)
 POST http://localhost:8080/api/auth/register
 Content-Type: application/json
 
 {
-  "email": "test@example.com",
+  "email": "jwt-test@example.com",
   "password": "secret1234"
 }
 
-### Login user
+### Login pour récupérer le JWT
 POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "test@example.com",
+  "email": "jwt-test@example.com",
   "password": "secret1234"
 }
 
-### Login demo user (Je le créais en dur dans AuthService)
-POST http://localhost:8080/api/auth/login
-Content-Type: application/json
-
-{
-  "email": "demo@petcare.local",
-  "password": "demo1234"
-}
+### Endpoint protégé /me (Je remplace <token> par le JWT reçu au login à l'étape précédente)
+GET http://localhost:8080/api/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqd3QtdGVzdEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIlVTRVIiXSwiaWF0IjoxNzY3MDIzOTcxLCJleHAiOjE3NjcwMjc1NzF9.Sv1fv_ZfV1HMT9V4wcl1aGiSPYSrI6tfoHjL0ChIQ-s

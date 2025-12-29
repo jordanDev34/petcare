@@ -5,6 +5,7 @@ import com.petcare.petcare_api.auth.dto.LoginRequest;
 import com.petcare.petcare_api.auth.dto.RegisterRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -26,6 +27,19 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         AuthResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> me(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("{\"error\":\"unauthorized\"}");
+        }
+
+        var response = new java.util.HashMap<String, Object>();
+        response.put("email", authentication.getName());
+        response.put("roles", authentication.getAuthorities());
+
         return ResponseEntity.ok(response);
     }
 }

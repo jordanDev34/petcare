@@ -5,6 +5,7 @@ import com.petcare.petcare_api.auth.dto.LoginRequest;
 import com.petcare.petcare_api.auth.dto.RegisterRequest;
 import com.petcare.petcare_api.auth.model.AppUser;
 import com.petcare.petcare_api.auth.model.Role;
+import com.petcare.petcare_api.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +16,14 @@ import java.util.*;
 public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    // Je fais un mini “repo” en mémoire pour cette 1ère version test
+    // Je fais un mini “repo” en mémoire pour cette 1ère version
     private final Map<String, AppUser> usersByEmail = new HashMap<>();
 
-    public AuthService(PasswordEncoder passwordEncoder) {
+    public AuthService(PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
 
         // utilisateur de test (pour login direct)
         AppUser demo = new AppUser(
@@ -52,8 +55,9 @@ public class AuthService {
 
         usersByEmail.put(email, user);
 
-        // TODO: ici je vais retourner un vrai JWT
-        return new AuthResponse("REGISTERED_FAKE_TOKEN", "Bearer");
+        String token = jwtService.generateToken(user.getEmail(), user.getRoles());
+
+        return new AuthResponse(token, "Bearer");
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -64,7 +68,8 @@ public class AuthService {
             throw new IllegalArgumentException("Invalid credentials");
         }
 
-        // TODO: ici je vais générer un vrai JWT basé sur user
-        return new AuthResponse("LOGIN_FAKE_TOKEN", "Bearer");
+        String token = jwtService.generateToken(user.getEmail(), user.getRoles());
+
+        return new AuthResponse(token, "Bearer");
     }
 }

@@ -21,3 +21,9 @@ management:
     web:
       exposure:
         include: health,info
+
+petcare:
+  security:
+    jwt-secret: "change-this-super-secret-key-for-prod-32chars-min"
+    jwt-expiration-ms: 3600000 # 1 heure
+
