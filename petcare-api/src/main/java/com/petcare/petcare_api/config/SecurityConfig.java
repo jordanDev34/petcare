@@ -12,21 +12,19 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Pour une API REST (on durcira ça plus tard avec JWT)
                 .csrf(csrf -> csrf.disable())
-
-                // Autorisations
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/health", "/api/health/**", "/actuator/health", "/actuator/info").permitAll()
+                        .requestMatchers(
+                                "/api/health",
+                                "/api/health/**",
+                                "/actuator/health",
+                                "/actuator/info",
+                                "/api/auth/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
-
-                // Évite la redirection HTML vers /login
                 .formLogin(form -> form.disable())
-
-                // Si tu veux tester vite avec Basic Auth sur les autres endpoints
                 .httpBasic(Customizer.withDefaults())
-
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(401);
