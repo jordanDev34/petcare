@@ -2,33 +2,51 @@
   <div class="w-full max-w-md bg-white rounded-2xl shadow p-6">
     <h1 class="text-2xl font-bold mb-2">Connexion</h1>
     <p class="text-sm text-slate-600 mb-6">
-      Page en construction ... (Cette page sera reliée à l’API d’authentification (JWT) dans une prochaine étape).
+      Connectez-vous pour accéder à votre espace PetCare.
     </p>
 
-    <div class="space-y-4">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
       <div>
         <label class="block text-sm text-slate-700 mb-1">Email</label>
         <input
+          type="email"
+          formControlName="email"
           class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-900"
           placeholder="vous@example.com"
         />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <p class="mt-1 text-xs text-rose-600">Email invalide.</p>
+        }
       </div>
 
       <div>
         <label class="block text-sm text-slate-700 mb-1">Mot de passe</label>
         <input
           type="password"
+          formControlName="password"
           class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-900"
           placeholder="••••••••"
         />
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <p class="mt-1 text-xs text-rose-600">Mot de passe requis.</p>
+        }
       </div>
 
+      @if (error) {
+        <p class="text-sm text-rose-600">{{ error }}</p>
+      }
+
       <button
-        class="w-full mt-4 rounded-lg bg-black text-white py-2 text-sm font-semibold hover:opacity-90 disabled:opacity-50"
-        disabled
+        type="submit"
+        class="w-full mt-2 rounded-lg bg-black text-white py-2 text-sm font-semibold hover:opacity-90 disabled:opacity-50"
+        [disabled]="loading"
       >
-        Se connecter (login non fonctionnel => à venir)
+        @if (loading) {
+          Connexion…
+        } @else {
+          Se connecter
+        }
       </button>
-    </div>
+    </form>
   </div>
 </div>
