@@ -6,7 +6,7 @@ import {
   MeResponse,
   RegisterPayload,
 } from '../api/auth-api.service';
-import { tap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -19,7 +19,13 @@ export class AuthService {
   readonly isAuthenticated = computed(() => !!this.userSignal());
 
   constructor() {
-    // Je verrais ici plus tard : si un token existe, je pourrais appeler loadCurrentUser()
+    // Restauration de session
+    const token = this.getToken();
+    if (token) {
+      this.loadCurrentUser().subscribe({
+        error: () => this.logout(),
+      });
+    }
   }
 
   getToken(): string | null {
@@ -34,28 +40,32 @@ export class AuthService {
     }
   }
 
-  login(payload: LoginPayload) {
-    return this.authApi.login(payload).pipe(
-      tap((res: AuthResponse) => {
-        this.setToken(res.accessToken);
-        // plus tard : this.loadCurrentUser().subscribe()
-      })
-    );
-  }
-
-  register(payload: RegisterPayload) {
-    return this.authApi.register(payload).pipe(
-      tap((res: AuthResponse) => {
-        this.setToken(res.accessToken);
-      })
-    );
-  }
-
+  /** Ici, je charge /api/auth/me et je mets à jour le signal user */
   loadCurrentUser() {
     return this.authApi.me().pipe(
       tap((user) => {
         this.userSignal.set(user);
       })
+    );
+  }
+
+  /** Login : API => token => /me → userSignal */
+  login(payload: LoginPayload) {
+    return this.authApi.login(payload).pipe(
+      tap((res: AuthResponse) => {
+        this.setToken(res.accessToken);
+      }),
+      switchMap(() => this.loadCurrentUser())
+    );
+  }
+
+  /** Register : API => token => /me => userSignal */
+  register(payload: RegisterPayload) {
+    return this.authApi.register(payload).pipe(
+      tap((res: AuthResponse) => {
+        this.setToken(res.accessToken);
+      }),
+      switchMap(() => this.loadCurrentUser())
     );
   }
 
