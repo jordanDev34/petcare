@@ -1,13 +1,16 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { AuthService } from './auth.service';
+
+const TOKEN_KEY = 'petcare_jwt';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const auth = inject(AuthService);
-  const token = auth.getToken();
+  // J'intercepte les appels backend
+  if (!req.url.startsWith('/api')) {
+    return next(req);
+  }
 
-  // J'ajoute le header que pour les appels backend /api/*
-  if (!token || !req.url.startsWith('/api/')) {
+  const token = localStorage.getItem(TOKEN_KEY);
+
+  if (!token) {
     return next(req);
   }
 

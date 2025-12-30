@@ -1,23 +1,25 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './features/home/home.component';
-import { LoginComponent } from './features/auth/login/login.component';
-import { RegisterComponent } from './features/auth/register/register.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: HomeComponent,
-    title: 'PetCare - Accueil',
+    loadComponent: () => 
+      import('./features/home/home.component').then((m) => m.HomeComponent),
   },
   {
     path: 'login',
-    component: LoginComponent,
-    title: 'PetCare - Connexion',
+    loadComponent: () =>
+      import('./features/auth/login/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'pets',
+    loadComponent: () =>
+      import('./features/pets/pets-page.component').then((m) => m.PetsPageComponent),
   },
   {
     path: 'register',
-    component: RegisterComponent,
-    title: 'PetCare - Inscription',
+    loadComponent: () =>
+      import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
   },
   {
     path: '**',
