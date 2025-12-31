@@ -11,7 +11,8 @@
         <input
           type="email"
           formControlName="email"
-          class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-900"
+          class="w-full rounded-lg border px-3 py-2 text-sm outline-none
+                border-slate-300 focus:border-black focus:ring-1 focus:ring-black"
           placeholder="vous@example.com"
         />
         @if (form.controls.email.touched && form.controls.email.invalid) {
@@ -28,7 +29,7 @@
           type="password"
           formControlName="password"
           class="w-full rounded-lg border px-3 py-2 text-sm outline-none
-                 border-slate-300 focus:border-black focus:ring-1 focus:ring-black"
+                border-slate-300 focus:border-black focus:ring-1 focus:ring-black"
           placeholder="••••••••"
         />
 
@@ -41,13 +42,14 @@
 
       <button
         type="submit"
-        class="w-full mt-2 rounded-lg bg-black text-white py-2 text-sm font-semibold hover:opacity-90 disabled:opacity-50"
+        class="w-full rounded-lg bg-black text-white text-sm font-semibold py-2
+              disabled:opacity-60 disabled:cursor-not-allowed"
         [disabled]="loading"
       >
         @if (!loading) {
-          <span>Se connecter</span>
+          Se connecter
         } @else {
-          <span>Connexion...</span>
+          Connexion...
         }
       </button>
 
@@ -56,6 +58,17 @@
           {{ error }}
         </p>
       }
+
+      <!-- Lien vers l'inscription -->
+      <p class="text-xs text-slate-500 text-center pt-2">
+        Pas encore de compte ?
+        <a
+          routerLink="/register"
+          class="font-semibold text-black hover:underline"
+        >
+          S’inscrire
+        </a>
+      </p>
     </form>
   </div>
 </div>
