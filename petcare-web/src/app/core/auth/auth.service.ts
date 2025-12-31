@@ -1,103 +1,76 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, map, of, switchMap, tap } from 'rxjs';
-import { AuthApiService } from '../api/auth-api.service';
-
-interface Credentials {
-  email: string;
-  password: string;
-}
-
-interface CurrentUser {
-  email: string;
-  roles: { authority: string }[];
-}
+import { BehaviorSubject, catchError, map, of, switchMap, tap, Observable } from 'rxjs';
+import { AuthApiService, LoginPayload, RegisterPayload, MeResponse } from '../api/auth-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private api = inject(AuthApiService);
-  private router = inject(Router);
+  private readonly authApi = inject(AuthApiService);
+  private readonly router = inject(Router);
 
   private readonly TOKEN_KEY = 'petcare_jwt';
 
-  private currentUserSubject = new BehaviorSubject<CurrentUser | null>(null);
-  currentUser$ = this.currentUserSubject.asObservable();
+  // Etat utilisateur courant
+  private readonly currentUserSubject = new BehaviorSubject<MeResponse | null>(null);
+  readonly currentUser$ = this.currentUserSubject.asObservable();
 
-  get currentUser(): CurrentUser | null {
+  // Getter pratique visualiser l'utilisateur dans l'interface (header)
+  get currentUser(): MeResponse | null {
     return this.currentUserSubject.value;
   }
 
   isAuthenticated(): boolean {
-    return !!this.currentUserSubject.value;
+    return !!localStorage.getItem(this.TOKEN_KEY);
   }
 
-  constructor() {
-    const token = this.getToken();
-    if (token) {
-      // Si un token existe deja, je tente de recuperer /me au demarrage
-      this.loadMe().subscribe();
-    }
-  }
+  // --- Login / Register ---
 
-  // --- Gestion du token ---
-
-  getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
-  }
-
-  private setToken(token: string): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
-  }
-
-  private clearToken(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-  }
-
-  // --- API ---
-
-   // Register : /api/auth/register => Je réutilise les mêmes credentials que pour login. Pas besoin de RegisterPayload ici.
-  register(payload: Credentials) {
-    return this.api.register(payload);
-  }
-
-  // Je charge /api/auth/me, met à jour currentUser et je renvoie un Observable<CurrentUser | null>.
-  loadMe() {
-    const token = this.getToken();
-    if (!token) {
-      this.currentUserSubject.next(null);
-      return of(null);
-    }
-
-    return this.api.me().pipe(
-      tap((user: any) => {
-        this.currentUserSubject.next(user as CurrentUser);
+  login(payload: LoginPayload): Observable<void> {
+    return this.authApi.login(payload).pipe(
+      tap((res) => {
+        localStorage.setItem(this.TOKEN_KEY, res.accessToken);
       }),
-      catchError((err) => {
-        console.error('loadMe failed', err);
-        this.currentUserSubject.next(null);
-        this.clearToken();
-        return of(null);
-      })
+      switchMap(() => this.loadMe())
     );
   }
 
-
-   // Login : /api/auth/login -> JWT (je stocke le token) -> /api/auth/me
-  login(payload: Credentials) {
-    return this.api.login(payload).pipe(
-      tap((res: any) => {
-        this.setToken(res.accessToken);
+  register(payload: RegisterPayload): Observable<void> {
+    return this.authApi.register(payload).pipe(
+      tap((res) => {
+        localStorage.setItem(this.TOKEN_KEY, res.accessToken);
       }),
-      switchMap(() => this.loadMe()),
+      switchMap(() => this.loadMe())
+    );
+  }
+
+  // --- Chargement du /me ---
+
+  loadMe(): Observable<void> {
+    const token = localStorage.getItem(this.TOKEN_KEY);
+    if (!token) {
+      this.currentUserSubject.next(null);
+      return of(void 0);
+    }
+
+    return this.authApi.me().pipe(
+      tap((user) => {
+        this.currentUserSubject.next(user);
+      }),
+      catchError((err: unknown) => {
+        console.error('Erreur loadMe()', err);
+        this.currentUserSubject.next(null);
+        localStorage.removeItem(this.TOKEN_KEY);
+        return of(void 0);
+      }),
       map(() => void 0)
     );
   }
 
-   // Logout : je clear le token, je remet currentUser à null et je repart sur la home
+  // Logout : je clear le token, je remet currentUser à null et je repart sur la home
 
   logout(): void {
-    this.clearToken();
+    localStorage.removeItem(this.TOKEN_KEY);
     this.currentUserSubject.next(null);
-    this.router.navigateByUrl('/');
+    this.router.navigateByUrl('/login');
   }
 }

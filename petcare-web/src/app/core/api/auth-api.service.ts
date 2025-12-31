@@ -7,6 +7,11 @@ export interface LoginPayload {
   password: string;
 }
 
+export interface RegisterPayload {
+  email: string;
+  password: string;
+}
+
 export interface AuthResponse {
   accessToken: string;
   tokenType: string; // "Bearer"
