@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
@@ -14,6 +14,7 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   loading = false;
   error: string | null = null;
@@ -42,8 +43,10 @@ export class LoginComponent {
       .subscribe({
         next: () => {
           this.loading = false;
-          // plus tard : this.auth.loadCurrentUser().subscribe()
-          this.router.navigateByUrl('/');
+
+          const redirectTo = this.route.snapshot.queryParamMap.get('redirectTo') ?? '/';
+
+          this.router.navigateByUrl(redirectTo);
         },
         error: (err) => {
           console.error('Login error', err);

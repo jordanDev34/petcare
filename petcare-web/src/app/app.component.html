@@ -7,30 +7,54 @@
         <span class="font-bold text-lg">PetCare</span>
       </a>
 
-      <nav class="flex items-center gap-4 text-sm">
-        <a
-          routerLink="/"
-          routerLinkActive="text-black font-semibold"
-          class="text-slate-600 hover:text-black"
-          [routerLinkActiveOptions]="{ exact: true }"
-        >
-          Accueil
-        </a>
-        <a
-          routerLink="/login"
-          routerLinkActive="text-black font-semibold"
-          class="text-slate-600 hover:text-black"
-        >
-          Connexion
-        </a>
-        <a
-          routerLink="/register"
-          routerLinkActive="text-black font-semibold"
-          class="text-slate-600 hover:text-black"
-        >
-          Inscription
-        </a>
-      </nav>
+<nav class="flex items-center gap-4 text-sm">
+  <a
+    routerLink="/"
+    routerLinkActive="text-black font-semibold"
+    class="text-slate-600 hover:text-black"
+    [routerLinkActiveOptions]="{ exact: true }"
+  >
+    Accueil
+  </a>
+
+  <a
+    routerLink="/pets"
+    routerLinkActive="text-black font-semibold"
+    class="text-slate-600 hover:text-black"
+  >
+    Mes animaux
+  </a>
+
+  @if (!auth.isAuthenticated()) {
+    <!-- Quand user non connecté : montrer Connexion / Inscription -->
+    <a
+      routerLink="/login"
+      routerLinkActive="text-black font-semibold"
+      class="text-slate-600 hover:text-black"
+    >
+      Connexion
+    </a>
+    <a
+      routerLink="/register"
+      routerLinkActive="text-black font-semibold"
+      class="text-slate-600 hover:text-black"
+    >
+      Inscription
+    </a>
+  } @else {
+    <!-- Quand user connecté : montrer email + bouton Déconnexion -->
+    <span class="text-slate-500">
+      {{ auth.currentUser?.email }}
+    </span>
+    <button
+      type="button"
+      class="px-3 py-1 rounded-full border text-xs hover:bg-slate-100"
+      (click)="onLogout()"
+    >
+      Déconnexion
+    </button>
+  }
+</nav>
     </div>
   </header>
 

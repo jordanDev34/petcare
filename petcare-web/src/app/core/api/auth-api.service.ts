@@ -2,26 +2,34 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export interface AuthResponse {
-  accessToken: string;
-  tokenType: string;
-}
-
 export interface LoginPayload {
   email: string;
   password: string;
 }
 
+export interface AuthResponse {
+  accessToken: string;
+  tokenType: string; // "Bearer"
+}
+
+export interface MeResponse {
+  email: string;
+  roles: { authority: string }[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthApiService {
   private http = inject(HttpClient);
-  private readonly baseUrl = '/api/auth';
 
   login(payload: LoginPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/login`, payload);
+    return this.http.post<AuthResponse>('/api/auth/login', payload);
   }
 
-  me(): Observable<{ email: string; roles: { authority: string }[] }> {
-    return this.http.get<{ email: string; roles: { authority: string }[] }>(`${this.baseUrl}/me`);
+  register(payload: LoginPayload): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>('/api/auth/register', payload);
+  }
+
+  me(): Observable<MeResponse> {
+    return this.http.get<MeResponse>('/api/auth/me');
   }
 }

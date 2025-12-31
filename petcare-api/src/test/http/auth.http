@@ -18,13 +18,13 @@ Content-Type: application/json
 
 ### Endpoint protégé /me (Je remplace <token> par le JWT reçu au login à l'étape précédente)
 GET http://localhost:8080/api/auth/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JkYW4tdGVzdEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIlVTRVIiXSwiaWF0IjoxNzY3MTE5NzQ0LCJleHAiOjE3NjcxMjMzNDR9.Ae_rLFCIztjbsD7yZ1MMRdT6BFPNx9LQmqrMLLwFwk4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JkYW4tdGVzdEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIlVTRVIiXSwiaWF0IjoxNzY3MTgzNDI5LCJleHAiOjE3NjcxODcwMjl9.z6y8lp6Cgp7vaH_gx9QcKE64HPE0m25kMCa8KRsbz3Y
 
 ####################################################################################################################################################################################
 
 ### Créer un pet (nécessite un token valide après avoir fait les 3 étapes précédentes => prendre le token de /api/auth/login )
 POST http://localhost:8080/api/pets
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JkYW4tdGVzdEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIlVTRVIiXSwiaWF0IjoxNzY3MTE5NzQ0LCJleHAiOjE3NjcxMjMzNDR9.Ae_rLFCIztjbsD7yZ1MMRdT6BFPNx9LQmqrMLLwFwk4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JkYW4tdGVzdEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIlVTRVIiXSwiaWF0IjoxNzY3MTgzNDI5LCJleHAiOjE3NjcxODcwMjl9.z6y8lp6Cgp7vaH_gx9QcKE64HPE0m25kMCa8KRsbz3Y
 Content-Type: application/json
 
 {
@@ -35,12 +35,12 @@ Content-Type: application/json
 
 ### Liste mes pets
 GET http://localhost:8080/api/pets
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JkYW4tdGVzdEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIlVTRVIiXSwiaWF0IjoxNzY3MTE5NzQ0LCJleHAiOjE3NjcxMjMzNDR9.Ae_rLFCIztjbsD7yZ1MMRdT6BFPNx9LQmqrMLLwFwk4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JkYW4tdGVzdEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIlVTRVIiXSwiaWF0IjoxNzY3MTgzNDI5LCJleHAiOjE3NjcxODcwMjl9.z6y8lp6Cgp7vaH_gx9QcKE64HPE0m25kMCa8KRsbz3Y
 
 ### Récupérer un pet par id
 GET http://localhost:8080/api/pets/3
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JkYW4tdGVzdEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIlVTRVIiXSwiaWF0IjoxNzY3MTE5NzQ0LCJleHAiOjE3NjcxMjMzNDR9.Ae_rLFCIztjbsD7yZ1MMRdT6BFPNx9LQmqrMLLwFwk4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JkYW4tdGVzdEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIlVTRVIiXSwiaWF0IjoxNzY3MTgzNDI5LCJleHAiOjE3NjcxODcwMjl9.z6y8lp6Cgp7vaH_gx9QcKE64HPE0m25kMCa8KRsbz3Y
 
 ### Supprimer un pet
 DELETE http://localhost:8080/api/pets/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JkYW4tdGVzdEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIlVTRVIiXSwiaWF0IjoxNzY3MTE5NzQ0LCJleHAiOjE3NjcxMjMzNDR9.Ae_rLFCIztjbsD7yZ1MMRdT6BFPNx9LQmqrMLLwFwk4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JkYW4tdGVzdEBleGFtcGxlLmNvbSIsInJvbGVzIjpbIlVTRVIiXSwiaWF0IjoxNzY3MTgzNDI5LCJleHAiOjE3NjcxODcwMjl9.z6y8lp6Cgp7vaH_gx9QcKE64HPE0m25kMCa8KRsbz3Y

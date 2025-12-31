@@ -1,26 +1,42 @@
 package com.petcare.petcare_api.auth.model;
 
+import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.Set;
-import java.util.UUID;
 
+@Entity
+@Table(name = "app_user")
 public class AppUser {
 
-    private final UUID id;
-    private final String email;
-    private final String passwordHash;
-    private final Set<Role> roles;
-    private final Instant createdAt;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;  
 
-    public AppUser(UUID id, String email, String passwordHash, Set<Role> roles, Instant createdAt) {
-        this.id = id;
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
+
+    // Pour l’instant, je ne stocke pas les rôles en base => USER par défaut.
+    @Transient
+    private Set<Role> roles;
+
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt;
+
+    protected AppUser() {
+    }
+
+    public AppUser(String email, String passwordHash, Set<Role> roles, Instant createdAt) {
         this.email = email;
         this.passwordHash = passwordHash;
         this.roles = roles;
         this.createdAt = createdAt;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
@@ -33,10 +49,12 @@ public class AppUser {
     }
 
     public Set<Role> getRoles() {
-        return roles;
+        return (roles == null || roles.isEmpty()) ? Set.of(Role.USER) : roles;
     }
 
     public Instant getCreatedAt() {
         return createdAt;
     }
+
+    // setters optionnels je metttrais si besoin plus tard
 }
